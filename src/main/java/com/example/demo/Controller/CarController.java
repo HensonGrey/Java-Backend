@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import com.example.demo.Service.CarService;
 import com.example.demo.dtos.CarDto;
+import com.example.demo.dtos.CarFilterDto;
+import com.example.demo.exceptions.CarNotFoundException;
 import com.example.demo.models.Car;
 
 @RestController
@@ -36,8 +39,13 @@ public class CarController {
     }
     
     @GetMapping("car-details/{id}")
-    public CarDto getCar(@PathVariable long id){
-        return carService.getCarById(id);
+    public ResponseEntity<CarDto> getCar(@PathVariable long id){
+        return ResponseEntity.ok(carService.getCarById(id));
+    }
+
+    @GetMapping("cars/filter")
+    public ResponseEntity<List<CarDto>> filterCars(@RequestBody CarFilterDto filterData){
+        return ResponseEntity.ok(carService.filterCars(filterData.getMinPrice(), filterData.getMaxPrice(), filterData.getCondition()));
     }
 
     @PostMapping("car/create")
@@ -47,9 +55,9 @@ public class CarController {
     }
 
     @PutMapping("car/update/{id}")
-    public ResponseEntity<String> editCar(@PathVariable long id, @RequestBody CarDto car){
-        carService.updateCarData(id, car);
-        return ResponseEntity.status(HttpStatus.OK).body("Entity data was successfully modified!");
+    public ResponseEntity<CarDto> editCar(@PathVariable long id, @RequestBody CarDto car){
+        CarDto response = carService.updateCarData(id, car);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("car/delete/{id}")

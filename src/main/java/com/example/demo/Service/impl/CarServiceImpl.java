@@ -77,19 +77,30 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public void deleteById(long id) {
-        carRepository.deleteById(id);
+        Car car = carRepository.findById(id).orElseThrow(() -> new CarNotFoundException("Could not find car with id:" + id));
+        carRepository.delete(car);
     }
 
     @Override
-    public void updateCarData(long id, CarDto carDto) {
+    public CarDto updateCarData(long id, CarDto carDto) {
         Car car = carRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Car with ID " + id + " not found"));
 
         car.setTitle(carDto.getTitle());
         car.setDescription(carDto.getDescription());
         car.setCondition(carDto.getCondition());
-        car.setPrice(car.getPrice());
+        car.setPrice(carDto.getPrice());
 
-        carRepository.save(car);
+        Car newCar = carRepository.save(car);
+
+        return MapToDto(newCar);
+    }
+
+    @Override
+    public List<CarDto> filterCars(Integer minPrice, Integer maxPrice, String condition) {
+        List<Car> cars = carRepository.findFilteredCars(minPrice, maxPrice, condition);
+
+        List<CarDto> mapped_to_dto = cars.stream().map(this::MapToDto).collect(Collectors.toList());
+        return mapped_to_dto;
     }
 }

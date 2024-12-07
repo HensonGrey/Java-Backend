@@ -9,5 +9,6 @@ public interface CarService {
     List<CarDto> getAllCars();
     CarDto getCarById(long id);
     void deleteById(long id);
-    void updateCarData(long id, CarDto car); 
+    CarDto updateCarData(long id, CarDto car); 
+    List<CarDto> filterCars(Integer minPrice, Integer maxPrice, String condition);
 }
