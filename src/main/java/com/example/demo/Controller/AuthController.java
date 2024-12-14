@@ -43,7 +43,13 @@ public class AuthController {
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) throws Exception {
         authService.register(registerDto);
-        return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
+        return new ResponseEntity<>("User registered successfully!", HttpStatus.CREATED);
+    }
+
+    @PostMapping("register-admin")
+    public ResponseEntity<String> registerAdmin(@RequestBody RegisterDto registerDto) throws Exception{
+        authService.registerAdmin(registerDto);
+        return new ResponseEntity<>("Admin profile was successfully created! (Use with caution)", HttpStatus.CREATED);
     }
 
     @PutMapping("user/edit/{user_id}")

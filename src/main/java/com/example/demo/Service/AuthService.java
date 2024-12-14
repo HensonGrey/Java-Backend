@@ -13,6 +13,7 @@ public interface AuthService {
     List<UserEntity> getAll(Authentication authentication) throws Exception;
     AuthResponseDto login(LoginDto loginDto);
     void register(RegisterDto registerDto) throws Exception;
+    void registerAdmin(RegisterDto registerDto) throws Exception; //for the purpose of testing
     UserEntity edit(Integer id, UserEntity new_user_data, Authentication authentication) throws Exception;
     void deleteUserById(Integer id, Authentication authentication) throws Exception;
 }

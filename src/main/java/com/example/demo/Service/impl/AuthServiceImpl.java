@@ -88,6 +88,22 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public void registerAdmin(RegisterDto registerDto) throws Exception {
+        if (userRepository.existsByUsername(registerDto.getUsername())) {
+            throw new UserAlreadyExistsException("User already exists!");
+        }
+
+        UserEntity user = new UserEntity();
+        user.setUsername(registerDto.getUsername());
+        user.setPassword(passwordEncoder.encode((registerDto.getPassword())));
+
+        Roles roles = roleRepository.findByName("ADMIN").get();
+        user.setRoles(Collections.singletonList(roles));
+
+        userRepository.save(user);
+    }
+
+    @Override
     public UserEntity edit(Integer id, UserEntity new_user_data, Authentication authentication) {
         // Get the currently authenticated username
         // String currentUsername = authentication.getName();

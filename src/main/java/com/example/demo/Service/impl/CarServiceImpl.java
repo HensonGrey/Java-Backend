@@ -46,6 +46,7 @@ public class CarServiceImpl implements CarService {
     
     private CarDto MapToDto(Car car){
         CarDto mappedCar = new CarDto();
+        mappedCar.setId(car.getId());
         mappedCar.setTitle(car.getTitle());
         mappedCar.setDescription(car.getDescription());
         mappedCar.setCondition(car.getCondition());
