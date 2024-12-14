@@ -40,34 +40,17 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> getAllCars() {
-        // long test = 3333;
-        // Car car_test = carRepository
-        //                             .findById(test)
-        // .                           orElseThrow(
-        //                             () -> new CarNotFoundException(
-        //                                 "Entity with that id could not be found!"));
-
         List<Car> allCars = carRepository.findAll();
         return allCars.stream().map(car -> MapToDto(car)).collect(Collectors.toList());
     }
     
     private CarDto MapToDto(Car car){
         CarDto mappedCar = new CarDto();
-        mappedCar.setId(car.getId());
         mappedCar.setTitle(car.getTitle());
         mappedCar.setDescription(car.getDescription());
         mappedCar.setCondition(car.getCondition());
         mappedCar.setPrice(car.getPrice());
         return mappedCar;
-    }
-
-    private Car MapToEntity(CarDto carDto){
-        Car car = new Car();
-        car.setPrice(carDto.getPrice());
-        car.setDescription(carDto.getDescription());
-        car.setCondition(carDto.getCondition());
-        car.setPrice(car.getPrice());
-        return car;
     }
 
     @Override

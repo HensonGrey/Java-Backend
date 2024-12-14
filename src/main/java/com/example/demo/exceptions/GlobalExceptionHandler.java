@@ -1,24 +1,34 @@
 package com.example.demo.exceptions;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-
-import java.util.Date;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
    
     @ExceptionHandler(CarNotFoundException.class)
-    public ResponseEntity<ErrorObject> handleCarNotFoundException(CarNotFoundException ex, WebRequest request){
-        ErrorObject errorObject = new ErrorObject();
+    public ResponseEntity<String> handleCarNotFoundException(CarNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 
-        errorObject.setStatusCode(HttpStatus.NOT_FOUND.value()); 
-        errorObject.setMessage(ex.getMessage());
-        errorObject.setTimestamp(new Date());
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<String> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage()); // 409 Conflict
+    }
 
-        return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.NOT_FOUND);
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserIsNotAdminException.class)
+    public ResponseEntity<String> handleUserIsNotAdminException(UserIsNotAdminException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UnauthorizedEdittingException.class)
+    public ResponseEntity<String> handleUnauthorizedEdittingException(UnauthorizedEdittingException ex){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }
