@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/register-admin").permitAll() 
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()            
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() 
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();

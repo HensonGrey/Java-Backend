@@ -31,4 +31,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleUnauthorizedEdittingException(UnauthorizedEdittingException ex){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+        e.printStackTrace();  // This ensures the exception stack trace is logged.
+        return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
