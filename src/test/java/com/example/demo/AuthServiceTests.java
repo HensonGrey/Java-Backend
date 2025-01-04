@@ -67,12 +67,16 @@ class AuthServiceTests {
 		MockitoAnnotations.openMocks(this);
 	}
 
+	private final String mainUser = "marti";
+	private final String mainPass = "123";
+	private final String mainAdminRole = "ADMIN";
+
 	@Test
 	public void testLogin_Success() {
 
 		LoginDto loginDto = new LoginDto();
-		loginDto.setUsername("marti");
-		loginDto.setPassword("123");
+		loginDto.setUsername(mainUser);
+		loginDto.setPassword(mainPass);
 
 		Authentication mockAuth = mock(Authentication.class);
 		when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(mockAuth);
@@ -92,8 +96,8 @@ class AuthServiceTests {
 	public void testRegisterAdmin_UserAlreadyExists() throws Exception {
 		RegisterDto registerDto = new RegisterDto();
 
-		registerDto.setUsername("marti");
-		registerDto.setPassword("123");
+		registerDto.setUsername(mainUser);
+		registerDto.setPassword(mainPass);
 
 		when(userRepository.existsByUsername(registerDto.getUsername())).thenReturn(true);
 
@@ -107,14 +111,14 @@ class AuthServiceTests {
 	@Test
 	public void testRegisterAdmin_Success() throws Exception {
 		RegisterDto registerDto = new RegisterDto();
-		registerDto.setUsername("marti");
-		registerDto.setPassword("123");
+		registerDto.setUsername(mainUser);
+		registerDto.setPassword(mainPass);
 
 		when(userRepository.existsByUsername(registerDto.getUsername())).thenReturn(false);
 
 		Roles adminRole = new Roles();
-		adminRole.setName("ADMIN");
-		when(roleRepository.findByName("ADMIN")).thenReturn(Optional.of(adminRole));
+		adminRole.setName(mainAdminRole);
+		when(roleRepository.findByName(mainAdminRole)).thenReturn(Optional.of(adminRole));
 
 		when(passwordEncoder.encode(registerDto.getPassword())).thenReturn("encodedPassword");
 
@@ -127,8 +131,8 @@ class AuthServiceTests {
 	public void testEdit_Success() {
 		UserEntity existingUser = new UserEntity();
 		existingUser.setId(1);
-		existingUser.setUsername("marti");
-		existingUser.setPassword("123");
+		existingUser.setUsername(mainUser);
+		existingUser.setPassword(mainPass);
 		UserEntity newUserData = new UserEntity();
 		String newPass = "palec123";
 		String newUsername = "Kolio";
@@ -155,10 +159,8 @@ class AuthServiceTests {
 
 		UserEntity newUserData = new UserEntity();
 		newUserData.setId(1);
-		String newPass = "marti";
-		String newUsername = "123";
-		newUserData.setUsername(newUsername);
-		newUserData.setPassword(newPass);
+		newUserData.setUsername(mainUser);
+		newUserData.setPassword(mainPass);
 
 		when(userRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -174,13 +176,13 @@ class AuthServiceTests {
 	public void testDeleteUserById_Admin() throws Exception {
 		UserEntity userToDelete = new UserEntity();
 		userToDelete.setId(1);
-		userToDelete.setUsername("marti");
-		userToDelete.setPassword("123");
+		userToDelete.setUsername(mainUser);
+		userToDelete.setPassword(mainPass);
 
 		when(userRepository.findById(1)).thenReturn(Optional.of(userToDelete));
 
 		Answer<Collection<GrantedAuthority>> authoritiesAnswer = invocation -> {
-			return Arrays.asList(new SimpleGrantedAuthority("ADMIN"));
+			return Arrays.asList(new SimpleGrantedAuthority(mainAdminRole));
 		};
 		when(authentication.getAuthorities()).thenAnswer(authoritiesAnswer);
 
@@ -191,11 +193,11 @@ class AuthServiceTests {
 
 	@Test
 	public void testDeleteUserById_NotAdmin() throws Exception {
-		// Prepare mock user
+
 		UserEntity userToDelete = new UserEntity();
 		userToDelete.setId(1);
-		userToDelete.setUsername("marti");
-		userToDelete.setPassword("123");
+		userToDelete.setUsername(mainUser);
+		userToDelete.setPassword(mainPass);
 
 		when(userRepository.findById(1)).thenReturn(Optional.of(userToDelete));
 
