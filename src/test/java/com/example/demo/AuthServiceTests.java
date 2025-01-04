@@ -72,6 +72,34 @@ class AuthServiceTests {
 	private final String mainAdminRole = "ADMIN";
 
 	@Test
+	public void getAll_ShouldReturnUsers_WhenUserIsAdmin() throws Exception {
+
+		UserEntity user1 = new UserEntity();
+		user1.setUsername(mainUser);
+		UserEntity user2 = new UserEntity();
+		user2.setUsername("ads");
+		List<UserEntity> mockUsers = List.of(user1, user2);
+
+		when(userRepository.findAll()).thenReturn(mockUsers);
+
+		doAnswer(invocation -> createAuthorities(mainAdminRole))
+				.when(authentication).getAuthorities();
+
+		List<UserEntity> result = authService.getAll(authentication);
+		assertNotNull(result);
+		assertEquals(2, result.size());
+		assertEquals(mainUser, result.get(0).getUsername());
+	}
+
+	private Collection<GrantedAuthority> createAuthorities(String... roles) {
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		for (String role : roles) {
+			authorities.add(() -> role);
+		}
+		return authorities;
+	}
+
+	@Test
 	public void testLogin_Success() {
 
 		LoginDto loginDto = new LoginDto();
