@@ -222,7 +222,7 @@ public class CarServiceTests {
     }
 
     @Test
-    void testUpdateCarData_EntityNotFound() {
+    public void testUpdateCarData_EntityNotFound() {
         long id = (long) finalId;
         CarDto carDto = new CarDto();
 
