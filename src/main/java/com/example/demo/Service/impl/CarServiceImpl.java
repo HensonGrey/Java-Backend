@@ -21,12 +21,16 @@ public class CarServiceImpl implements CarService {
     private CarRepository carRepository;
 
     @Autowired
-    public CarServiceImpl(CarRepository carRepository){
+    public CarServiceImpl(CarRepository carRepository) {
         this.carRepository = carRepository;
     }
 
     @Override
     public CarDto createCar(CarDto car) {
+
+        if (car == null) {
+            throw new NullPointerException("This is not a valid car");
+        }
         Car mappedCar = new Car();
 
         mappedCar.setTitle(car.getTitle());
@@ -43,8 +47,8 @@ public class CarServiceImpl implements CarService {
         List<Car> allCars = carRepository.findAll();
         return allCars.stream().map(car -> MapToDto(car)).collect(Collectors.toList());
     }
-    
-    private CarDto MapToDto(Car car){
+
+    private CarDto MapToDto(Car car) {
         CarDto mappedCar = new CarDto();
         mappedCar.setId(car.getId());
         mappedCar.setTitle(car.getTitle());
@@ -61,14 +65,15 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public void deleteById(long id) {
-        Car car = carRepository.findById(id).orElseThrow(() -> new CarNotFoundException("Could not find car with id:" + id));
+        Car car = carRepository.findById(id)
+                .orElseThrow(() -> new CarNotFoundException("Could not find car with id:" + id));
         carRepository.delete(car);
     }
 
     @Override
     public CarDto updateCarData(long id, CarDto carDto) {
         Car car = carRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Car with ID " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Car with ID " + id + " not found"));
 
         car.setTitle(carDto.getTitle());
         car.setDescription(carDto.getDescription());
